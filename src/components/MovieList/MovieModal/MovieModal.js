@@ -1,26 +1,29 @@
-import { useState } from "react";
 import { Modal, Button, Image, Form } from "react-bootstrap";
+import { useState } from "react";
 
 function MovieModal(props) {
   const [show, setShow] = useState(false);
+  const [comment, setComment] = useState("");
+  const addMovieUrl = process.env.REACT_APP_ADD_MOVIE_URL;
+
   const handleClose = () => setShow(false);
+
   const handleShow = () => setShow(true);
 
-  const [comment, setComment] = useState("");
   const handleCommentChange = (e) => {
     setComment(e.target.value);
   };
 
-  const favListHandler = async () => {
+  const addMovie = async () => {
     const data = {
-      title: props.data.title || "No Title",
-      release_date: props.data.release_date,
-      poster_path: props.data.poster_path,
-      overview: props.data.overview,
+      title: props.movie.title || "No Title",
+      release_date: props.movie.release_date,
+      poster_path: props.movie.poster_path,
+      overview: props.movie.overview,
       comments: comment,
     };
     try {
-      await fetch("http://localhost:3000/addMovie", {
+      await fetch(addMovieUrl, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -36,15 +39,20 @@ function MovieModal(props) {
   return (
     <>
       <Button variant="primary" onClick={handleShow}>
-        add to the favorite list
+        Add to favorites
       </Button>
 
       <Modal show={show} onHide={handleClose}>
         <Modal.Header closeButton>
-          <Modal.Title>{props.data.title || "No Title"}</Modal.Title>
+          <Modal.Title>{props.movie.title || "No Title"}</Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          <Image src={props.poster} rounded style={{ width: "16rem" }} />
+          <Image
+            src={props.firstUrlSec + props.movie.poster_path}
+            rounded
+            style={{ width: "16rem" }}
+          />
+          <p>{props.movie.overview}</p>
           <Form.Group controlId="comment">
             <Form.Label>Comment</Form.Label>
             <Form.Control
@@ -60,7 +68,7 @@ function MovieModal(props) {
           <Button variant="secondary" onClick={handleClose}>
             Close
           </Button>
-          <Button variant="primary" onClick={favListHandler}>
+          <Button variant="success" onClick={addMovie}>
             add to favorite list
           </Button>
         </Modal.Footer>

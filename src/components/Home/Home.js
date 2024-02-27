@@ -1,29 +1,27 @@
 import { useState, useEffect } from "react";
 import MovieList from "../MovieList/MovieList";
-import './Home.css';
+import "./Home.css";
 function Home() {
-  const [trendingData, setTrendingData] = useState([]);
+  const [Movies, setMovies] = useState([]);
 
-  const url = "http://localhost:3000/trending";
+  const getMoviesUrl = process.env.REACT_APP_GET_MOVE_URL;
+  const getMovies = async () => {
+    try {
+      const request = await fetch(getMoviesUrl);
+      const data = await request.json();
+      setMovies(data);
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    }
+  };
 
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const response = await fetch(url);
-        const data = await response.json();
-        setTrendingData(data);
-        console.log(data);
-      } catch (error) {
-        console.error("Error fetching data:", error);
-      }
-    };
-
-    fetchData();
+    getMovies();
   }, []);
 
   return (
     <main className="main-list">
-      <MovieList data={trendingData} />
+      <MovieList Movies={Movies} />
     </main>
   );
 }
