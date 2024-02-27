@@ -1,15 +1,11 @@
 import Movie from "./Movie/Movie";
+
 function MovieList(props) {
-  const data = props.data;
+  const Movies = props.Movies;
   return (
     <>
-      {data.map((e) => {
-        return (
-          <Movie
-            key={e.id}
-            data = {e}
-          />
-        );
+      {Movies.map((movie) => {
+        return <Movie key={movie.id} movie={movie} />;
       })}
     </>
   );
